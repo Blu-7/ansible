@@ -1,0 +1,149 @@
+---
+- name: Install php 7.4
+  hosts: dev
+  become: true
+  vars:
+    php_old: "7.1"
+    php_new: "7.4"
+    php_extensions:
+      - "php{{ php_new }}-fpm"
+      - "php{{ php_new }}-cli"
+      - "php{{ php_new }}-common"
+      - "php{{ php_new }}-bcmath"
+      - "php{{ php_new }}-curl"
+      - "php{{ php_new }}-dev"
+      - "php{{ php_new }}-gd"
+      - "php{{ php_new }}-imagick"
+      - "php{{ php_new }}-imap"
+      - "php{{ php_new }}-mbstring"
+      - "php{{ php_new }}-mysql"
+      - "php{{ php_new }}-opcache"
+      - "php{{ php_new }}-readline"
+      - "php{{ php_new }}-soap"
+      - "php{{ php_new }}-xml"
+      - "php{{ php_new }}-xmlrpc"
+      - "php{{ php_new }}-zip"
+  tasks:
+    ## Backup
+    - name: Check old php configuration folder
+    - stat:
+        path: "/etc/php/{{ php_old }}" # Check stat of old php configuration folder
+      register: php_old_stat # Store task output
+      tags:
+        - backup
+
+    - name: Backup old config
+      copy:
+        src: "/etc/php/{{ php_old }}"
+        dest: "/etc/php/{{ php_old }}.bak"
+        remote_src: yes
+      when: php_old_stat.stat.exists
+      tags:
+        - backup
+    ## Install
+    - name: Install basic software packages
+      apt:
+        name: software-properties-common
+        state: present
+        update_cache: yes
+      tags:
+        - install
+
+    - name: Add php PPA repository
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+        update_cache: yes
+      tags:
+        - install
+
+    - name: Install php {{ php_new }} && their dependencies
+      apt:
+        name: "{{ php_extensions }}"
+        state: present
+        update_cache: yes
+      tags:
+        - install
+    ## Configuration
+    - name: Enable Apache proxy_fcgi module
+      apache2_module:
+        name: proxy_fcgi
+        state: present
+      tags:
+        - configure
+
+    - name: Enable Apache setenvif module
+      apache2_module:
+        name: setenvif
+        state: present
+      tags:
+        - configure
+
+    - name: Enable Apache & php module
+      command: a2enconf php{{ php_new }}-fpm
+      register: enconf_result
+      changed_when: "'Enabling' in enconf_result.stdout"
+      tags:
+        - configure
+
+    - name: Check old php module
+      shell: apache2ctl -M 2>/dev/null | grep -q "php{{ php_old | regex_replace('\\.', '') }}_module"
+      register: old_php_module
+      failed_when: false
+      changed_when: false
+      tags:
+        - configure
+
+    - name: Disable old php module
+      apache2_module:
+        name: php{{ php_old | regex_replace('\\.', '') }}
+        state: absent
+      when: old_php_module.rc == 0 # Run this task only if result from previous task is success (0 is success)
+      tags:
+        - configure
+
+    - name: Disable old PHP {{ php_old }} configuration for apache2
+      command: a2disconf php{{ php_old }}-fpm
+      register: disconf_result
+      changed_when: "'Disabling' in disconf_result.stdout"
+      tags:
+        - configure
+
+    ## Service
+    - name: Enable and start php {{ php_new }} service
+      systemd:
+        name: php{{ php_new }}-fpm
+        state: started
+        enabled: yes
+      tags:
+        - service
+
+    - name: Disable and stop php {{ php_old }} service
+      systemd:
+        name: php{{ php_old }}-fpm
+        state: stopped
+        enabled: no
+      failed_when: false
+      tags:
+        - service
+
+    - name: Restart Apache
+      systemd:
+        name: apache2
+        state: restarted
+      tags:
+        - service
+
+    ## VERIFY
+    - name: Verify PHP version
+      command: php -v
+      register: php_version
+      changed_when: false
+      tags:
+        - verify
+
+    - name: Display PHP version
+      debug:
+        msg: "{{ php_version.stdout_lines }}"
+      tags:
+        - verify
