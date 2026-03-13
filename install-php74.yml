@@ -23,6 +23,117 @@
       - "php{{ php_new }}-xml"
       - "php{{ php_new }}-xmlrpc"
       - "php{{ php_new }}-zip"
+    # SAPIs to apply php.ini settings for
+    php_sapis:
+      - cli
+      - fpm
+    # Custom php.ini configuration to apply to PHP {{ php_new }}
+    php_ini_config:
+      # [PHP]
+      - { section: "PHP", option: "engine", value: "On" }
+      - { section: "PHP", option: "short_open_tag", value: "Off" }
+      - { section: "PHP", option: "precision", value: "14" }
+      - { section: "PHP", option: "output_buffering", value: "4096" }
+      - { section: "PHP", option: "zlib.output_compression", value: "Off" }
+      - { section: "PHP", option: "implicit_flush", value: "Off" }
+      - { section: "PHP", option: "serialize_precision", value: "-1" }
+      - { section: "PHP", option: "zend.enable_gc", value: "On" }
+      - { section: "PHP", option: "zend.exception_ignore_args", value: "On" }
+      - { section: "PHP", option: "expose_php", value: "On" }
+      - { section: "PHP", option: "max_execution_time", value: "600" }
+      - { section: "PHP", option: "max_input_time", value: "600" }
+      - { section: "PHP", option: "memory_limit", value: "2048M" }
+      - { section: "PHP", option: "error_reporting", value: "E_ALL & ~E_DEPRECATED & ~E_STRICT" }
+      - { section: "PHP", option: "display_errors", value: "Off" }
+      - { section: "PHP", option: "display_startup_errors", value: "Off" }
+      - { section: "PHP", option: "log_errors", value: "On" }
+      - { section: "PHP", option: "log_errors_max_len", value: "1024" }
+      - { section: "PHP", option: "ignore_repeated_errors", value: "Off" }
+      - { section: "PHP", option: "ignore_repeated_source", value: "Off" }
+      - { section: "PHP", option: "report_memleaks", value: "On" }
+      - { section: "PHP", option: "variables_order", value: '"GPCS"' }
+      - { section: "PHP", option: "request_order", value: '"GP"' }
+      - { section: "PHP", option: "register_argc_argv", value: "Off" }
+      - { section: "PHP", option: "auto_globals_jit", value: "On" }
+      - { section: "PHP", option: "post_max_size", value: "1024M" }
+      - { section: "PHP", option: "default_mimetype", value: '"text/html"' }
+      - { section: "PHP", option: "default_charset", value: '"UTF-8"' }
+      - { section: "PHP", option: "enable_dl", value: "Off" }
+      - { section: "PHP", option: "file_uploads", value: "On" }
+      - { section: "PHP", option: "upload_max_filesize", value: "1024M" }
+      - { section: "PHP", option: "max_file_uploads", value: "200" }
+      - { section: "PHP", option: "allow_url_fopen", value: "On" }
+      - { section: "PHP", option: "allow_url_include", value: "Off" }
+      - { section: "PHP", option: "default_socket_timeout", value: "60" }
+      # [CLI Server]
+      - { section: "CLI Server", option: "cli_server.color", value: "On" }
+      # [Date]
+      - { section: "Date", option: "date.timezone", value: "Asia/Ho_Chi_Minh" }
+      # [Pdo_mysql]
+      - { section: "Pdo_mysql", option: "pdo_mysql.default_socket", value: "" }
+      # [mail function]
+      - { section: "mail function", option: "SMTP", value: "localhost" }
+      - { section: "mail function", option: "smtp_port", value: "25" }
+      - { section: "mail function", option: "mail.add_x_header", value: "Off" }
+      # [ODBC]
+      - { section: "ODBC", option: "odbc.allow_persistent", value: "On" }
+      - { section: "ODBC", option: "odbc.check_persistent", value: "On" }
+      - { section: "ODBC", option: "odbc.max_persistent", value: "-1" }
+      - { section: "ODBC", option: "odbc.max_links", value: "-1" }
+      - { section: "ODBC", option: "odbc.defaultlrl", value: "4096" }
+      - { section: "ODBC", option: "odbc.defaultbinmode", value: "1" }
+      # [MySQLi]
+      - { section: "MySQLi", option: "mysqli.max_persistent", value: "-1" }
+      - { section: "MySQLi", option: "mysqli.allow_persistent", value: "On" }
+      - { section: "MySQLi", option: "mysqli.max_links", value: "-1" }
+      - { section: "MySQLi", option: "mysqli.default_port", value: "3306" }
+      - { section: "MySQLi", option: "mysqli.default_socket", value: "" }
+      - { section: "MySQLi", option: "mysqli.default_host", value: "" }
+      - { section: "MySQLi", option: "mysqli.default_user", value: "" }
+      - { section: "MySQLi", option: "mysqli.default_pw", value: "" }
+      - { section: "MySQLi", option: "mysqli.reconnect", value: "Off" }
+      # [mysqlnd]
+      - { section: "mysqlnd", option: "mysqlnd.collect_statistics", value: "On" }
+      - { section: "mysqlnd", option: "mysqlnd.collect_memory_statistics", value: "Off" }
+      # [PostgreSQL]
+      - { section: "PostgreSQL", option: "pgsql.allow_persistent", value: "On" }
+      - { section: "PostgreSQL", option: "pgsql.auto_reset_persistent", value: "Off" }
+      - { section: "PostgreSQL", option: "pgsql.max_persistent", value: "-1" }
+      - { section: "PostgreSQL", option: "pgsql.max_links", value: "-1" }
+      - { section: "PostgreSQL", option: "pgsql.ignore_notice", value: "0" }
+      - { section: "PostgreSQL", option: "pgsql.log_notice", value: "0" }
+      # [bcmath]
+      - { section: "bcmath", option: "bcmath.scale", value: "0" }
+      # [Session]
+      - { section: "Session", option: "session.save_handler", value: "files" }
+      - { section: "Session", option: "session.use_strict_mode", value: "0" }
+      - { section: "Session", option: "session.use_cookies", value: "1" }
+      - { section: "Session", option: "session.use_only_cookies", value: "1" }
+      - { section: "Session", option: "session.name", value: "PHPSESSID" }
+      - { section: "Session", option: "session.auto_start", value: "0" }
+      - { section: "Session", option: "session.cookie_lifetime", value: "0" }
+      - { section: "Session", option: "session.cookie_path", value: "/" }
+      - { section: "Session", option: "session.serialize_handler", value: "php" }
+      - { section: "Session", option: "session.gc_probability", value: "0" }
+      - { section: "Session", option: "session.gc_divisor", value: "1000" }
+      - { section: "Session", option: "session.gc_maxlifetime", value: "1440" }
+      - { section: "Session", option: "session.cache_limiter", value: "nocache" }
+      - { section: "Session", option: "session.cache_expire", value: "180" }
+      - { section: "Session", option: "session.use_trans_sid", value: "0" }
+      - { section: "Session", option: "session.sid_length", value: "26" }
+      - { section: "Session", option: "session.trans_sid_tags", value: '"a=href,area=href,frame=src,form="' }
+      - { section: "Session", option: "session.sid_bits_per_character", value: "5" }
+      # [Assertion]
+      - { section: "Assertion", option: "zend.assertions", value: "-1" }
+      # [Tidy]
+      - { section: "Tidy", option: "tidy.clean_output", value: "Off" }
+      # [soap]
+      - { section: "soap", option: "soap.wsdl_cache_enabled", value: "1" }
+      - { section: "soap", option: "soap.wsdl_cache_dir", value: '"/tmp"' }
+      - { section: "soap", option: "soap.wsdl_cache_ttl", value: "86400" }
+      - { section: "soap", option: "soap.wsdl_cache_limit", value: "5" }
+      # [ldap]
+      - { section: "ldap", option: "ldap.max_links", value: "-1" }
   tasks:
     ## Backup
     - name: Check old php configuration folder
@@ -65,6 +176,22 @@
       tags:
         - install
     ## Configuration
+    ## Apply custom php.ini settings to PHP {{ php_new }}
+    - name: Apply custom php.ini configuration to PHP {{ php_new }}
+      ini_file:
+        path: "/etc/php/{{ php_new }}/fpm/php.ini"
+        section: "{{ item.section }}"
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+        backup: yes
+      loop: "{{ php_ini_config }}"
+      loop_control:
+        label: "{{ item.option }} = {{ item.value }}"
+      notify: Restart php-fpm
+      tags:
+        - configure
+        - php_ini
+
     - name: Enable Apache proxy_fcgi module
       apache2_module:
         name: proxy_fcgi
@@ -147,3 +274,9 @@
         msg: "{{ php_version.stdout_lines }}"
       tags:
         - verify
+
+  handlers:
+    - name: Restart php-fpm
+      systemd:
+        name: php{{ php_new }}-fpm
+        state: restarted
