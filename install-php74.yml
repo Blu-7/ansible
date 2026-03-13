@@ -192,6 +192,18 @@
         - configure
         - php_ini
 
+    - name: Set pm.max_chilren of php worker
+      ini_file:
+        path: "/etc/php/{{ php_new }}/fpm/pool.d/www.conf"
+        section: "www"
+        option: "pm.max_children"
+        value: "10"
+        backup: yes
+      notify: Restart php-fpm
+      tags:
+        - configure
+        - php_ini
+
     - name: Enable Apache proxy_fcgi module
       apache2_module:
         name: proxy_fcgi
