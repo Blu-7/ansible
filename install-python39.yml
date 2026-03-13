@@ -1,0 +1,7 @@
+# Install python 3.9 for match Ansible requirement
+---
+- name: Install python 3.9
+  hosts: p1
+  become: true
+  tasks:
+
