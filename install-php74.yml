@@ -1,6 +1,6 @@
 ---
 - name: Install php 7.4
-  hosts: dev
+  hosts: p1
   become: true
   vars:
     php_old: "7.1"
@@ -26,7 +26,7 @@
   tasks:
     ## Backup
     - name: Check old php configuration folder
-    - stat:
+      stat:
         path: "/etc/php/{{ php_old }}" # Check stat of old php configuration folder
       register: php_old_stat # Store task output
       tags:
